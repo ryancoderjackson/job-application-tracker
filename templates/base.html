@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Job Application Tracker</title>
+</head>
+<body>
+  <header>
+    <h1><a href="/">Job Application Tracker</a></h1>
+    <nav>
+      {% if user.is_authenticated %}
+        <span>Hi, {{ user.username }}</span>
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit">Logout</button>
+        </form>
+      {% else %}
+        {% if request.resolver_match.url_name == 'login' %}
+          <a href="{% url 'applications:signup' %}">Sign up</a>
+        {% elif request.resolver_match.url_name == 'signup' %}
+          <a href="{% url 'login' %}">Login</a>
+        {% else %}
+          <a href="{% url 'login' %}">Login</a> |
+          <a href="{% url 'applications:signup' %}">Sign up</a>
+        {% endif %}
+      {% endif %}
+    </nav>
+    <hr>
+  </header>
+
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Delete Application</h2>
+  <p>Are you sure you want to delete <strong>{{ app.company }}</strong> — {{ app.role_title }}?</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, delete</button>
+    <a href="{% url 'applications:list' %}">Cancel</a>
+  </form>
+{% endblock %}
