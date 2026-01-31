@@ -5,15 +5,28 @@
 
   <form method="get">
     <input type="text" name="q" placeholder="Search company or role..." value="{{ q }}">
-    <select name="status">
-      <option value="">All statuses</option>
-      {% for value, label in status_choices %}
-        <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
-      {% endfor %}
-    </select>
-    <button type="submit">Filter</button>
+    {% if status %}
+      <input type="hidden" name="status" value="{{ status }}">
+    {% endif %}
+    <button type="submit">Search</button>
     <a href="{% url 'applications:list' %}">Reset</a>
   </form>
+
+  <hr>
+
+  <nav>
+    <a href="{% url 'applications:list' %}?q={{ q }}"
+      {% if not status %}style="font-weight:bold; text-decoration: underline;"{% endif %}>
+      All
+    </a>
+
+    {% for value, label, count in status_count_list %}
+      | <a href="{% url 'applications:list' %}?status={{ value }}&q={{ q }}"
+          {% if status == value %}style="font-weight:bold; text-decoration: underline;"{% endif %}>
+          {{ label }} ({{ count }})
+        </a>
+    {% endfor %}
+  </nav>
 
   <hr>
 
@@ -30,5 +43,19 @@
     </ul>
   {% else %}
     <p>No applications yet. Add one!</p>
+  {% endif %}
+
+  {% if page_obj.has_other_pages %}
+    <nav>
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}&q={{ q }}&status={{ status }}">Previous</a>
+      {% endif %}
+
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&q={{ q }}&status={{ status }}">Next</a>
+      {% endif %}
+    </nav>
   {% endif %}
 {% endblock %}

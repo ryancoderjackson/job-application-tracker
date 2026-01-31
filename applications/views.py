@@ -1,6 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.core.paginator import Paginator
+from django.db.models import Count
 
 from .forms import ApplicationForm
 from .models import Application
@@ -20,11 +22,32 @@ def application_list(request):
     if q:
         qs = qs.filter(company__icontains=q) | qs.filter(role_title__icontains=q)
 
+    qs = qs.order_by("-date_applied")
+
+    paginator = Paginator(qs, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    status_counts = (
+        Application.objects
+        .filter(user=request.user)
+        .values("status")
+        .annotate(count=Count("id"))
+    )
+
+    status_count_map = {item["status"]: item["count"] for item in status_counts}
+    status_count_list = [
+        (value, label, status_count_map.get(value, 0))
+        for value, label in Application.Status.choices
+    ]
+
     context = {
-        "applications": qs,
+        "applications": page_obj,
         "status": status,
         "q": q,
         "status_choices": Application.Status.choices,
+        "page_obj": page_obj,
+        "status_count_list": status_count_list,
     }
     return render(request, "applications/app_list.html", context)
 
