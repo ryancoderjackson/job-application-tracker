@@ -25,10 +25,10 @@ A Django web application for tracking job applications, statuses, and follow-ups
 ![Signup](screenshots/signup.png)
 
 ### Application List
-![List](screenshots/list.png)
+![List](screenshots/applications_list.png)
 
 ### New Application Form
-![New](screenshots/new.png)
+![New](screenshots/new_application.png)
 
 ### Delete Application
 ![Delete](screenshots/delete_application.png)
