@@ -1,61 +1,97 @@
 {% extends "base.html" %}
-
 {% block content %}
-  <p><a href="{% url 'applications:create' %}">+ New Application</a></p>
 
-  <form method="get">
-    <input type="text" name="q" placeholder="Search company or role..." value="{{ q }}">
-    {% if status %}
-      <input type="hidden" name="status" value="{{ status }}">
-    {% endif %}
-    <button type="submit">Search</button>
-    <a href="{% url 'applications:list' %}">Reset</a>
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="h4 m-0">Applications</h2>
+  <a class="btn btn-primary" href="{% url 'applications:create' %}">+ New Application</a>
+</div>
+
+<div class="app-card mb-3">
+  <form method="get" class="row g-2 align-items-center">
+    <div class="col-12 col-md-6">
+      <input class="form-control" type="text" name="q" placeholder="Search company or role..." value="{{ q }}">
+      {% if status %}
+        <input type="hidden" name="status" value="{{ status }}">
+      {% endif %}
+    </div>
+    <div class="col-12 col-md-auto">
+      <button class="btn btn-outline-primary w-100" type="submit">Search</button>
+    </div>
+    <div class="col-12 col-md-auto">
+      <a class="btn btn-outline-secondary w-100" href="{% url 'applications:list' %}">Reset</a>
+    </div>
   </form>
+</div>
 
-  <hr>
-
-  <nav>
-    <a href="{% url 'applications:list' %}?q={{ q }}"
-      {% if not status %}style="font-weight:bold; text-decoration: underline;"{% endif %}>
+<nav class="mb-3">
+  <div class="d-flex flex-wrap gap-2">
+    <a class="btn btn-sm {% if not status %}btn-dark{% else %}btn-outline-dark{% endif %}"
+       href="{% url 'applications:list' %}?q={{ q }}">
       All
     </a>
 
     {% for value, label, count in status_count_list %}
-      | <a href="{% url 'applications:list' %}?status={{ value }}&q={{ q }}"
-          {% if status == value %}style="font-weight:bold; text-decoration: underline;"{% endif %}>
-          {{ label }} ({{ count }})
-        </a>
+      <a class="btn btn-sm {% if status == value %}btn-primary{% else %}btn-outline-primary{% endif %}"
+         href="{% url 'applications:list' %}?status={{ value }}&q={{ q }}">
+        {{ label }} ({{ count }})
+      </a>
     {% endfor %}
-  </nav>
+  </div>
+</nav>
 
-  <hr>
+{% if applications %}
+  <div class="vstack gap-2">
+    {% for app in applications %}
+      <div class="app-card d-flex justify-content-between align-items-start gap-3">
+        <div>
+          <div class="fw-semibold">{{ app.company }}</div>
+          <div class="text-muted">{{ app.role_title }}</div>
 
-  {% if applications %}
-    <ul>
-      {% for app in applications %}
-        <li>
-          <strong>{{ app.company }}</strong> — {{ app.role_title }}
-          ({{ app.get_status_display }})
-          <a href="{% url 'applications:update' app.pk %}">Edit</a>
-          <a href="{% url 'applications:delete' app.pk %}">Delete</a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No applications yet. Add one!</p>
-  {% endif %}
+          <div class="mt-2">
+            <span class="status-pill status-{{ app.status }}">
+              {{ app.get_status_display }}
+            </span>
+            {% if app.location %}
+              <span class="text-muted ms-2">{{ app.location }}</span>
+            {% endif %}
+          </div>
+        </div>
 
-  {% if page_obj.has_other_pages %}
-    <nav>
+        <div class="d-flex gap-2">
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'applications:update' app.pk %}">Edit</a>
+          <a class="btn btn-sm btn-outline-danger" href="{% url 'applications:delete' app.pk %}">Delete</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-secondary">No applications yet. Add one!</div>
+{% endif %}
+
+{% if page_obj.has_other_pages %}
+  <nav class="mt-3">
+    <ul class="pagination">
       {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}&q={{ q }}&status={{ status }}">Previous</a>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ q }}&status={{ status }}">Previous</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">Previous</span></li>
       {% endif %}
 
-      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      <li class="page-item disabled">
+        <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      </li>
 
       {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}&q={{ q }}&status={{ status }}">Next</a>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ q }}&status={{ status }}">Next</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">Next</span></li>
       {% endif %}
-    </nav>
-  {% endif %}
+    </ul>
+  </nav>
+{% endif %}
+
 {% endblock %}

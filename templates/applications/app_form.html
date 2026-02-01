@@ -1,12 +1,18 @@
 {% extends "base.html" %}
-
 {% block content %}
-  <h2>{% if mode == "create" %}New Application{% else %}Edit Application{% endif %}</h2>
 
-  <form method="post">
+<div class="app-card">
+  <h2 class="h4 mb-3">{% if form.instance.pk %}Edit Application{% else %}New Application{% endif %}</h2>
+
+  <form method="post" class="vstack gap-3">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Save</button>
-    <a href="{% url 'applications:list' %}">Cancel</a>
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary" type="submit">Save</button>
+      <a class="btn btn-outline-secondary" href="{% url 'applications:list' %}">Cancel</a>
+    </div>
   </form>
+</div>
+
 {% endblock %}

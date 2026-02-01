@@ -1,0 +1,23 @@
+/* Small polish on top of Bootstrap */
+body { font-size: 0.98rem; }
+
+.app-card {
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+  background: white;
+  padding: 14px;
+}
+
+.status-pill {
+  font-size: 0.78rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #f8f9fa;
+}
+
+.status-WISHLIST { background: #eef2ff; }
+.status-APPLIED { background: #e7f1ff; }
+.status-INTERVIEWING { background: #fff7e6; }
+.status-OFFER { background: #e8fff0; }
+.status-REJECTED { background: #ffe8e8; }

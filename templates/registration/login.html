@@ -1,10 +1,14 @@
 {% extends "base.html" %}
-
 {% block content %}
-  <h2>Login</h2>
-  <form method="post">
+
+<div class="app-card" style="max-width: 520px;">
+  <h2 class="h4 mb-3">Login</h2>
+
+  <form method="post" class="vstack gap-3">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Login</button>
+    <button class="btn btn-primary" type="submit">Login</button>
   </form>
+</div>
+
 {% endblock %}
