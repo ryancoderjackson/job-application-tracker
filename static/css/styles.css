@@ -16,8 +16,33 @@ body { font-size: 0.98rem; }
   background: #f8f9fa;
 }
 
-.status-WISHLIST { background: #eef2ff; }
-.status-APPLIED { background: #e7f1ff; }
-.status-INTERVIEWING { background: #fff7e6; }
-.status-OFFER { background: #e8fff0; }
-.status-REJECTED { background: #ffe8e8; }
+
+/* Applied */
+.status-APPLIED {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* Interviewing */
+.status-INTERVIEWING {
+  background-color: #fef3c7;
+  color: #b0b30f;
+}
+
+/* Offer */
+.status-OFFER {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+/* Rejected */
+.status-REJECTED {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Wishlist */
+.status-WISHLIST {
+  background-color: #e5e7eb;
+  color: #374151;
+}

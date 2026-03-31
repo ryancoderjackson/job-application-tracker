@@ -46,6 +46,7 @@
         <div>
           <div class="fw-semibold">{{ app.company }}</div>
           <div class="text-muted">{{ app.role_title }}</div>
+          <div class="small text-muted">Submitted {{ app.date_applied|date:"M j, Y" }}</div>
 
           <div class="mt-2">
             <span class="status-pill status-{{ app.status }}">
