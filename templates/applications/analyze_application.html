@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="app-card">
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+      <h2 class="h4 mb-1">AI Resume Match Analysis</h2>
+      <div class="text-muted">{{ app.company }} — {{ app.role_title }}</div>
+    </div>
+
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'applications:detail' app.pk %}">
+      ← Back to Application
+    </a>
+  </div>
+
+  <div class="mb-3">
+    <span class="status-pill status-{{ app.status }}">
+      {{ app.get_status_display }}
+    </span>
+    {% if app.location %}
+      <span class="text-muted ms-2">{{ app.location }}</span>
+    {% endif %}
+  </div>
+
+  <div class="mb-4">
+    {% if app.job_description %}
+      <div class="alert alert-success mb-0">
+        Job description is saved for this application and ready for analysis.
+      </div>
+    {% else %}
+      <div class="alert alert-warning mb-0">
+        No job description is saved yet. Edit this application and add one before running AI analysis.
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="mb-4">
+    <h3 class="h5">Paste Resume Text</h3>
+    <p class="text-muted">
+      Paste your current resume text below. The AI will compare it against the saved job description for this application.
+    </p>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn btn-primary" type="submit">Analyze Fit</button>
+    </form>
+  </div>
+
+  {% if latest_analysis %}
+    <hr>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3 class="h5 m-0">Latest Analysis</h3>
+      <span class="badge text-bg-dark">{{ latest_analysis.match_score }}% Match</span>
+    </div>
+
+    <div class="mb-3">
+      <p class="mb-1"><strong>Job Title Guess:</strong> {{ latest_analysis.job_title_guess }}</p>
+      <p class="mb-1"><strong>Seniority Level:</strong> {{ latest_analysis.seniority_level }}</p>
+      <p class="mb-0"><strong>Created:</strong> {{ latest_analysis.created_at|date:"M j, Y g:i A" }}</p>
+    </div>
+
+    <div class="mb-3">
+      <h4 class="h6">Fit Assessment</h4>
+      <p class="mb-0">{{ latest_analysis.fit_assessment }}</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6">
+        <h4 class="h6">Required Skills</h4>
+        <ul class="mb-0">
+          {% for item in latest_analysis.required_skills %}
+            <li>{{ item }}</li>
+          {% empty %}
+            <li>No required skills found.</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="col-md-6">
+        <h4 class="h6">Preferred Skills</h4>
+        <ul class="mb-0">
+          {% for item in latest_analysis.preferred_skills %}
+            <li>{{ item }}</li>
+          {% empty %}
+            <li>No preferred skills found.</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="col-md-6">
+        <h4 class="h6">Resume Strengths</h4>
+        <ul class="mb-0">
+          {% for item in latest_analysis.resume_strengths %}
+            <li>{{ item }}</li>
+          {% empty %}
+            <li>No strengths found.</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="col-md-6">
+        <h4 class="h6">Missing or Weak Skills</h4>
+        <ul class="mb-0">
+          {% for item in latest_analysis.missing_or_weak_skills %}
+            <li>{{ item }}</li>
+          {% empty %}
+            <li>No missing skills found.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <h4 class="h6">Tailored Resume Suggestions</h4>
+      <ul class="mb-0">
+        {% for item in latest_analysis.tailored_resume_suggestions %}
+          <li>{{ item }}</li>
+        {% empty %}
+          <li>No suggestions found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

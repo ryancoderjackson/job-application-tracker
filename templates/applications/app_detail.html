@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="app-card">
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+      <h2 class="h4 mb-1">{{ app.company }}</h2>
+      <div class="text-muted mb-2">{{ app.role_title }}</div>
+
+      <div class="mb-2">
+        <span class="status-pill status-{{ app.status }}">
+          {{ app.get_status_display }}
+        </span>
+        {% if app.location %}
+          <span class="text-muted ms-2">{{ app.location }}</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-secondary btn-sm" href="{% url 'applications:update' app.pk %}">Edit</a>
+      <a class="btn btn-outline-danger btn-sm" href="{% url 'applications:delete' app.pk %}">Delete</a>
+      <a class="btn btn-primary btn-sm" href="{% url 'applications:analyze_application' app.pk %}">Analyze Fit</a>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <p class="mb-1"><strong>Date Applied:</strong> {{ app.date_applied|date:"M j, Y" }}</p>
+    {% if app.follow_up_date %}
+      <p class="mb-1"><strong>Follow Up:</strong> {{ app.follow_up_date|date:"M j, Y" }}</p>
+    {% endif %}
+    {% if app.job_url %}
+      <p class="mb-0">
+        <strong>Job URL:</strong>
+        <a href="{{ app.job_url }}" target="_blank" rel="noopener noreferrer">View Posting</a>
+      </p>
+    {% endif %}
+  </div>
+
+  <hr>
+
+  <div class="mb-4">
+    <h3 class="h5">Notes</h3>
+    {% if app.notes %}
+      <div>{{ app.notes|linebreaks }}</div>
+    {% else %}
+      <p class="text-muted mb-0">No notes added yet.</p>
+    {% endif %}
+  </div>
+
+  <div class="mb-4">
+    <h3 class="h5">Job Description</h3>
+    {% if app.job_description %}
+      <div>{{ app.job_description|linebreaks }}</div>
+    {% else %}
+      <p class="text-muted mb-0">No job description saved yet.</p>
+      <p class="small text-muted">Add one when editing this application so the AI analyzer can compare your resume against it.</p>
+    {% endif %}
+  </div>
+
+  {% if latest_analysis %}
+    <hr>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3 class="h5 m-0">Latest AI Analysis</h3>
+      <span class="badge text-bg-dark">{{ latest_analysis.match_score }}% Match</span>
+    </div>
+
+    <div class="mb-3">
+      <p class="mb-1"><strong>Job Title Guess:</strong> {{ latest_analysis.job_title_guess }}</p>
+      <p class="mb-1"><strong>Seniority Level:</strong> {{ latest_analysis.seniority_level }}</p>
+      <p class="mb-0"><strong>Created:</strong> {{ latest_analysis.created_at|date:"M j, Y g:i A" }}</p>
+    </div>
+
+    <div class="mb-3">
+      <h4 class="h6">Fit Assessment</h4>
+      <p class="mb-0">{{ latest_analysis.fit_assessment }}</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6">
+        <h4 class="h6">Required Skills</h4>
+        <ul class="mb-0">
+          {% for item in latest_analysis.required_skills %}
+            <li>{{ item }}</li>
+          {% empty %}
+            <li>No required skills found.</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="col-md-6">
+        <h4 class="h6">Preferred Skills</h4>
+        <ul class="mb-0">
+          {% for item in latest_analysis.preferred_skills %}
+            <li>{{ item }}</li>
+          {% empty %}
+            <li>No preferred skills found.</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="col-md-6">
+        <h4 class="h6">Resume Strengths</h4>
+        <ul class="mb-0">
+          {% for item in latest_analysis.resume_strengths %}
+            <li>{{ item }}</li>
+          {% empty %}
+            <li>No strengths found.</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="col-md-6">
+        <h4 class="h6">Missing or Weak Skills</h4>
+        <ul class="mb-0">
+          {% for item in latest_analysis.missing_or_weak_skills %}
+            <li>{{ item }}</li>
+          {% empty %}
+            <li>No missing skills found.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <h4 class="h6">Tailored Resume Suggestions</h4>
+      <ul class="mb-0">
+        {% for item in latest_analysis.tailored_resume_suggestions %}
+          <li>{{ item }}</li>
+        {% empty %}
+          <li>No suggestions found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <div class="mt-4">
+    <a class="btn btn-outline-secondary" href="{% url 'applications:list' %}">← Back to Applications</a>
+  </div>
+</div>
+{% endblock %}
