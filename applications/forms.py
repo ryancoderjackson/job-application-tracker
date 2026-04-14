@@ -1,5 +1,5 @@
 from django import forms
-from .models import Application
+from .models import Application, UserResume
 
 
 class ApplicationForm(forms.ModelForm):
@@ -37,3 +37,16 @@ class ResumeAnalysisForm(forms.Form):
             }
         )
     )
+
+class UserResumeForm(forms.ModelForm):
+    class Meta:
+        model = UserResume
+        fields = ["resume_text"]
+        widgets = {
+            "resume_text": forms.Textarea(
+                attrs={
+                    "rows": 20,
+                    "placeholder": "Paste your base resume text here..."
+                }
+            )
+        }

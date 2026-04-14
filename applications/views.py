@@ -4,8 +4,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator
 from django.db.models import Count
 
-from .forms import ApplicationForm, ResumeAnalysisForm
-from .models import Application, ApplicationAnalysis
+from .forms import ApplicationForm, ResumeAnalysisForm, UserResumeForm
+from .models import Application, ApplicationAnalysis, UserResume
 from .services import analyze_resume_vs_job
 
 # Create your views here.
@@ -148,7 +148,12 @@ def analyze_application(request, pk):
                 messages.error(request, f"Analysis failed: {error}")
 
     else:
-        form = ResumeAnalysisForm()
+        initial_resume = ""
+        saved_resume = UserResume.objects.filter(user=request.user).first()
+        if saved_resume:
+            initial_resume = saved_resume.resume_text
+
+        form = ResumeAnalysisForm(initial={"resume_text": initial_resume})
 
     context = {
         "app": app,
@@ -156,3 +161,21 @@ def analyze_application(request, pk):
         "latest_analysis": latest_analysis,
     }
     return render(request, "applications/analyze_application.html", context)
+
+@login_required
+def resume_manage(request):
+    resume_obj, _ = UserResume.objects.get_or_create(
+        user=request.user,
+        defaults={"resume_text": ""}
+    )
+
+    if request.method == "POST":
+        form = UserResumeForm(request.POST, instance=resume_obj)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Resume saved successfully.")
+            return redirect("applications:resume_manage")
+    else:
+        form = UserResumeForm(instance=resume_obj)
+
+    return render(request, "applications/resume_manage.html", {"form": form})

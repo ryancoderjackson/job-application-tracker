@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="app-card">
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+      <h2 class="h4 mb-1">Saved Resume</h2>
+      <p class="text-muted mb-0">
+        Save your base resume here so the AI analyzer can auto-fill it when comparing against job descriptions.
+      </p>
+    </div>
+
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'applications:list' %}">
+      ← Back to Applications
+    </a>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary" type="submit">Save Resume</button>
+  </form>
+</div>
+{% endblock %}

@@ -69,5 +69,20 @@ class ApplicationAnalysis(models.Model):
     missing_or_weak_skills = models.JSONField(default=list, blank=True)
     tailored_resume_suggestions = models.JSONField(default=list, blank=True)
 
+    class Meta:
+        ordering = ["-created_at"]
+
     def __str__(self):
         return f"Analysis for {self.application.company} - {self.application.role_title}"
+
+class UserResume(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="resume_profile"
+    )
+    resume_text = models.TextField()
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Resume for {self.user.username}"
