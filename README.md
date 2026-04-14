@@ -10,28 +10,36 @@ A Django web application for tracking job applications, statuses, and follow-ups
 - Status-based navigation with counts
 - Pagination for longer lists
 
+### AI Resume Match Analysis
+- Analyze how well your resume matches a specific job description
+- Save a base resume once and auto-fill it for future analyses
+- Generate a match score (0–100%) with color-coded feedback
+- View required vs preferred skills extracted from job descriptions
+- Identify top skill gaps highlighted for quick review
+- Get tailored resume improvement suggestions
+- Automatically track the latest analysis per application
+
 ## Tech Stack
 - Python
 - Django
 - SQLite
 - Bootstrap 5
+- OpenAI API (AI-powered analysis)
+- python-dotenv (environment variable management)
 
 ## Screenshots
 
-### Login
-![Login](screenshots/login.png)
-
-### Signup
-![Signup](screenshots/signup.png)
-
 ### Application List
-![List](screenshots/applications_list.png)
+![List](screenshots/application_list_v3.png)
 
 ### New Application Form
-![New](screenshots/new_application.png)
+![New](screenshots/new_application_v2.png)
 
-### Delete Application
-![Delete](screenshots/delete_application.png)
+### AI Analysis Page
+![AI Analysis](screenshots/ai_analysis_page.png)
+
+### Resume Match Results
+![Match Results](screenshots/match_results.png)
 
 ## Setup (Local)
 
@@ -40,3 +48,7 @@ A Django web application for tracking job applications, statuses, and follow-ups
 3. Install dependencies:
    ```bash
    pip install -r requirements.txt
+4. Create a `.env` file in the root directory and add your OpenAI API key:
+5. Run the development server:
+```bash
+python manage.py runserver
